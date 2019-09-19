@@ -405,16 +405,16 @@ V8JS_METHOD(require)
 	efree(module_name);
 
 	// Check for module cyclic dependencies
-	for (std::vector<char *>::iterator it = c->modules_stack.begin(); it != c->modules_stack.end(); ++it)
-    {
-    	if (!strcmp(*it, normalised_module_id)) {
-    		efree(normalised_module_id);
-    		efree(normalised_path);
-
-		info.GetReturnValue().Set(isolate->ThrowException(V8JS_SYM("Module cyclic dependency")));
-		return;
-    	}
-    }
+//	for (std::vector<char *>::iterator it = c->modules_stack.begin(); it != c->modules_stack.end(); ++it)
+//    {
+//    	if (!strcmp(*it, normalised_module_id)) {
+//    		efree(normalised_module_id);
+//    		efree(normalised_path);
+//
+//		info.GetReturnValue().Set(isolate->ThrowException(V8JS_SYM("Module cyclic dependency")));
+//		return;
+//    	}
+//    }
 
     // If we have already loaded and cached this module then use it
 	if (c->modules_loaded.count(normalised_module_id) > 0) {
