@@ -72,6 +72,21 @@ void v8js_array_access_getter(uint32_t index, const v8::PropertyCallbackInfo<v8:
 
 	zval php_value = v8js_array_access_dispatch(object, "offsetGet", 1, index, zvalue);
 	v8::Local<v8::Value> ret_value = zval_to_v8js(&php_value, isolate);
+	
+	
+	 if(ret_value.IsEmpty()) {
+	 	  php_value = v8js_array_access_dispatch(object, "item", 1, index, zvalue);
+	      ret_value = zval_to_v8js(&php_value, isolate);
+	      zend_throw_exception(php_ce_v8js_exception, "Array size/offset exceeds maximum supported length", 0);
+	 }
+	
+	
+ 
+	      zend_throw_exception(php_ce_v8js_exception, "Array size/offset exceeds maximum supported length", 2);
+	
+	 
+	
+	
 	zval_ptr_dtor(&php_value);
 
 	info.GetReturnValue().Set(ret_value);
@@ -95,6 +110,11 @@ void v8js_array_access_setter(uint32_t index, v8::Local<v8::Value> value,
 	}
 
 	zval php_value = v8js_array_access_dispatch(object, "offsetSet", 2, index, zvalue);
+	
+	
+	
+	
+	
 	zval_ptr_dtor(&php_value);
 
 	/* simply pass back the value to tell we intercepted the call

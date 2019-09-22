@@ -122,15 +122,9 @@ static void v8js_dumper(v8::Isolate *isolate, v8::Local<v8::Value> var, int leve
 	}
 	if (var->IsBoolean())
 	{
-		v8::Maybe<bool> value = var->BooleanValue(v8_context);
-		if (value.IsNothing())
-		{
-			php_printf("<empty>\n");
-		}
-		else
-		{
-			php_printf("bool(%s)\n", value.FromJust() ? "true" : "false");
-		}
+		
+		php_printf("bool(%s)\n", var->BooleanValue(isolate) ? "true" : "false");
+		
 		return;
 	}
 
@@ -405,16 +399,16 @@ V8JS_METHOD(require)
 	efree(module_name);
 
 	// Check for module cyclic dependencies
-//	for (std::vector<char *>::iterator it = c->modules_stack.begin(); it != c->modules_stack.end(); ++it)
-//    {
-//    	if (!strcmp(*it, normalised_module_id)) {
-//    		efree(normalised_module_id);
-//    		efree(normalised_path);
-//
-//		info.GetReturnValue().Set(isolate->ThrowException(V8JS_SYM("Module cyclic dependency")));
-//		return;
-//    	}
-//    }
+	for (std::vector<char *>::iterator it = c->modules_stack.begin(); it != c->modules_stack.end(); ++it)
+    {
+    	if (!strcmp(*it, normalised_module_id)) {
+    		efree(normalised_module_id);
+    		efree(normalised_path);
+
+		info.GetReturnValue().Set(isolate->ThrowException(V8JS_SYM("Module cyclic dependency")));
+		return;
+    	}
+    }
 
     // If we have already loaded and cached this module then use it
 	if (c->modules_loaded.count(normalised_module_id) > 0) {
