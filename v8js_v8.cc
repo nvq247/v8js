@@ -129,9 +129,15 @@ void v8js_v8_call(v8js_ctx *c, zval **return_value,
 	tz = getenv("TZ");
 
 	if (tz != NULL) {
-		
+		if (c->tz == NULL) {
 			c->tz = strdup(tz);
-		
+		}
+		else if (strcmp(c->tz, tz) != 0) {
+			//v8::Date::DateTimeConfigurationChangeNotification(c->isolate);
+
+			//free(c->tz);
+			c->tz = strdup(tz);
+		}
 	}
 
 	if (time_limit > 0 || memory_limit > 0) {
@@ -290,7 +296,7 @@ int v8js_get_properties_hash(v8::Local<v8::Value> jsValue, HashTable *retval, in
 		}
 
 		/* Skip any prototype properties */
-		if (!jsObj->HasOwnProperty(isolate->GetEnteredContext(), jsKey).FromMaybe(false)
+		if (!jsObj->HasOwnProperty(isolate->GetEnteredOrMicrotaskContext(), jsKey).FromMaybe(false)
 			&& !jsObj->HasRealNamedProperty(v8_context, jsKey).FromMaybe(false)
 			&& !jsObj->HasRealNamedCallbackProperty(v8_context, jsKey).FromMaybe(false)) {
 			continue;
