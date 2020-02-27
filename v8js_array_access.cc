@@ -31,6 +31,7 @@ extern "C" {
 static zval v8js_array_access_dispatch(zend_object *object, const char *method_name, int param_count,
 									   uint32_t index, zval zvalue) /* {{{ */
 {
+	//printf("test method_name: %s",method_name);
 	zend_fcall_info fci;
 	zval php_value;
 
@@ -254,7 +255,7 @@ void v8js_array_access_named_getter(v8::Local<v8::Name> property_name, const v8:
 	}
 
 	v8::Local<v8::Value> ret_value = v8js_named_property_callback(property, info, V8JS_PROP_GETTER);
-
+	//printf("get name :%s",name);
 	if(ret_value.IsEmpty()) {
 		v8::Local<v8::Array> arr = v8::Array::New(isolate);
 		v8::Local<v8::Value> prototype = arr->GetPrototype();

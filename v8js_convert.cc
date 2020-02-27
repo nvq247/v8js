@@ -212,7 +212,12 @@ int v8js_to_zval(v8::Local<v8::Value> jsValue, zval *return_value, int flags, v8
 	}
 	else if (jsValue->IsBoolean())
 	{
-		
+//		v8::Maybe<bool> value = jsValue->BooleanValue(isolate);
+//		if (value.IsNothing())
+//		{
+//			return FAILURE;
+//		}
+//		RETVAL_BOOL(value.ToChecked());
 		RETVAL_BOOL(jsValue->BooleanValue(isolate));
 	}
 	else if (jsValue->IsInt32() || jsValue->IsUint32())

@@ -129,9 +129,15 @@ void v8js_v8_call(v8js_ctx *c, zval **return_value,
 	tz = getenv("TZ");
 
 	if (tz != NULL) {
-		
+		if (c->tz == NULL) {
 			c->tz = strdup(tz);
-		
+		}
+		else if (strcmp(c->tz, tz) != 0) {
+			c->isolate->DateTimeConfigurationChangeNotification();
+
+			free(c->tz);
+			c->tz = strdup(tz);
+		}
 	}
 
 	if (time_limit > 0 || memory_limit > 0) {
