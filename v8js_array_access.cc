@@ -31,6 +31,7 @@ extern "C" {
 static zval v8js_array_access_dispatch(zend_object *object, const char *method_name, int param_count,
 									   uint32_t index, zval zvalue) /* {{{ */
 {
+	//printf("test method_name: %s",method_name);
 	zend_fcall_info fci;
 	zval php_value;
 
@@ -72,6 +73,21 @@ void v8js_array_access_getter(uint32_t index, const v8::PropertyCallbackInfo<v8:
 
 	zval php_value = v8js_array_access_dispatch(object, "offsetGet", 1, index, zvalue);
 	v8::Local<v8::Value> ret_value = zval_to_v8js(&php_value, isolate);
+	
+	
+	 if(ret_value.IsEmpty()) {
+	 	  php_value = v8js_array_access_dispatch(object, "item", 1, index, zvalue);
+	      ret_value = zval_to_v8js(&php_value, isolate);
+	      zend_throw_exception(php_ce_v8js_exception, "Array size/offset exceeds maximum supported length", 0);
+	 }
+	
+	
+ 
+	      zend_throw_exception(php_ce_v8js_exception, "Array size/offset exceeds maximum supported length", 2);
+	
+	 
+	
+	
 	zval_ptr_dtor(&php_value);
 
 	info.GetReturnValue().Set(ret_value);
@@ -95,6 +111,11 @@ void v8js_array_access_setter(uint32_t index, v8::Local<v8::Value> value,
 	}
 
 	zval php_value = v8js_array_access_dispatch(object, "offsetSet", 2, index, zvalue);
+	
+	
+	
+	
+	
 	zval_ptr_dtor(&php_value);
 
 	/* simply pass back the value to tell we intercepted the call
@@ -234,7 +255,7 @@ void v8js_array_access_named_getter(v8::Local<v8::Name> property_name, const v8:
 	}
 
 	v8::Local<v8::Value> ret_value = v8js_named_property_callback(property, info, V8JS_PROP_GETTER);
-
+	//printf("get name :%s",name);
 	if(ret_value.IsEmpty()) {
 		v8::Local<v8::Array> arr = v8::Array::New(isolate);
 		v8::Local<v8::Value> prototype = arr->GetPrototype();
