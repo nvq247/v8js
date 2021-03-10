@@ -25,6 +25,7 @@ extern "C" {
 #include "ext/date/php_date.h"
 #include "ext/standard/php_string.h"
 #include "zend_interfaces.h"
+
 #include "zend_closures.h"
 #include "ext/spl/spl_exceptions.h"
 #include "zend_exceptions.h"
@@ -46,14 +47,16 @@ static zend_object_handlers v8js_v8generator_handlers;
 
 /* V8 Object handlers */
 
-static int v8js_v8object_has_property(zval *object, zval *member, int has_set_exists, void **cache_slot) /* {{{ */
+static int v8js_v8object_has_property(_zend_object *object, _zend_string *member, int has_set_exists, void **cache_slot) /* {{{ */
 {
 	/* param has_set_exists:
 	 * 0 (has) whether property exists and is not NULL  - isset()
 	 * 1 (set) whether property exists and is true-ish  - empty()
 	 * 2 (exists) whether property exists               - property_exists()
 	 */
+
 	int retval = false;
+		 /* xxx
 	v8js_v8object *obj = Z_V8JS_V8OBJECT_OBJ_P(object);
 
 	if (!obj->ctx) {
@@ -78,35 +81,35 @@ static int v8js_v8object_has_property(zval *object, zval *member, int has_set_ex
 
 	v8::Local<v8::String> jsKey = V8JS_ZSYM(Z_STR_P(member));
 
-	/* Skip any prototype properties */
+	//Skip any prototype properties  
 	if (!jsObj->HasRealNamedProperty(v8_context, jsKey).FromMaybe(false)
 			&& !jsObj->HasRealNamedCallbackProperty(v8_context, jsKey).FromMaybe(false)) {
 		return false;
 	}
 
 	if (has_set_exists == 2) {
-		/* property_exists(), that's enough! */
+		// property_exists(), that's enough! 
 		return true;
 	}
 
-	/* We need to look at the value. */
+	// We need to look at the value.  
 	v8::Local<v8::Value> jsVal = jsObj->Get(v8_context, jsKey).ToLocalChecked();
 
 	if (has_set_exists == 0 ) {
-		/* isset(): We make 'undefined' equivalent to 'null' */
+		// isset(): We make 'undefined' equivalent to 'null' 
 		return !( jsVal->IsNull() || jsVal->IsUndefined() );
 	}
 
-	/* empty() */
+	//
 	retval = jsVal->BooleanValue(isolate);
 
-	/* for PHP compatibility, [] should also be empty */
+	// for PHP compatibility, [] should also be empty  
 	if (jsVal->IsArray() && retval) {
 		v8::Local<v8::Array> array = v8::Local<v8::Array>::Cast(jsVal);
 		retval = (array->Length() != 0);
 	}
 
-	/* for PHP compatibility, '0' should also be empty */
+	// for PHP compatibility, '0' should also be empty  
 	v8::Local<v8::String> str;
 	if (jsVal->IsString() && retval && jsVal->ToString(v8_context).ToLocal(&str)
 			&& str->Length() == 1) {
@@ -116,14 +119,15 @@ static int v8js_v8object_has_property(zval *object, zval *member, int has_set_ex
 			retval = false;
 		}
 	}
-
+*/
 	return retval;
 }
 /* }}} */
 
-static zval *v8js_v8object_read_property(zval *object, zval *member, int type, void **cache_slot, zval *rv) /* {{{ */
+static _zval_struct *v8js_v8object_read_property(_zend_object *object, _zend_string *member, int type, void **cache_slot, _zval_struct *rv) /* {{{ */
 {
-	zval *retval = rv;
+	_zval_struct *retval = rv;
+	/* xxx
 	v8js_v8object *obj = Z_V8JS_V8OBJECT_OBJ_P(object);
 
 	if (!obj->ctx) {
@@ -146,7 +150,7 @@ static zval *v8js_v8object_read_property(zval *object, zval *member, int type, v
 		v8::Local<v8::String> jsKey = V8JS_ZSYM(Z_STR_P(member));
 		v8::Local<v8::Object> jsObj = v8obj->ToObject(v8_context).ToLocalChecked();
 
-		/* Skip any prototype properties */
+		// Skip any prototype properties 
 		if (jsObj->HasRealNamedProperty(v8_context, jsKey).FromMaybe(false)
 				|| jsObj->HasRealNamedCallbackProperty(v8_context, jsKey).FromMaybe(false)) {
 			v8::MaybeLocal<v8::Value> jsVal = jsObj->Get(v8_context, jsKey);
@@ -156,19 +160,20 @@ static zval *v8js_v8object_read_property(zval *object, zval *member, int type, v
 			}
 		}
 	}
-
+*/
 	return retval;
 }
 /* }}} */
 
-static zval *v8js_v8object_get_property_ptr_ptr(zval *object, zval *member, int type, void **cache_slot) /* {{{ */
+static _zval_struct *v8js_v8object_get_property_ptr_ptr(_zend_object *object, _zend_string *member, int type, void **cache_slot) /* {{{ */
 {
 	return NULL;
 }
 /* }}} */
 
-static SINCE74(zval*, void) v8js_v8object_write_property(zval *object, zval *member, zval *value, void **cache_slot ) /* {{{ */
+static SINCE74(_zval_struct*, void) v8js_v8object_write_property(_zend_object *object, _zend_string *member, _zval_struct *value, void **cache_slot ) /* {{{ */
 {
+	/* xxx
 	v8js_v8object *obj = Z_V8JS_V8OBJECT_OBJ_P(object);
 
 	if (!obj->ctx) {
@@ -190,13 +195,14 @@ static SINCE74(zval*, void) v8js_v8object_write_property(zval *object, zval *mem
 	if (v8objHandle->IsObject() && v8objHandle->ToObject(v8_context).ToLocal(&v8obj)) {
 		v8obj->CreateDataProperty(v8_context, V8JS_ZSYM(Z_STR_P(member)), zval_to_v8js(value, isolate));
 	}
-
+*/
 	return SINCE74(value,);
 }
 /* }}} */
 
-static void v8js_v8object_unset_property(zval *object, zval *member, void **cache_slot) /* {{{ */
+static void v8js_v8object_unset_property(_zend_object *object, _zend_string *member, void **cache_slot) /* {{{ */
 {
+	/* xxx
 	v8js_v8object *obj = Z_V8JS_V8OBJECT_OBJ_P(object);
 
 	if (!obj->ctx) {
@@ -218,17 +224,19 @@ static void v8js_v8object_unset_property(zval *object, zval *member, void **cach
 	if (v8objHandle->IsObject() && v8objHandle->ToObject(v8_context).ToLocal(&v8obj)) {
 		v8obj->Delete(v8_context, V8JS_ZSYM(Z_STR_P(member)));
 	}
+	*/
 }
 /* }}} */
 
-static HashTable *v8js_v8object_get_properties(zval *object) /* {{{ */
+static HashTable *v8js_v8object_get_properties(_zend_object *object) /* {{{ */
 {
+	/* xxx
 	v8js_v8object *obj = Z_V8JS_V8OBJECT_OBJ_P(object);
 
 	if (obj->properties == NULL) {
 #if PHP_VERSION_ID < 70300
 		if (GC_G(gc_active)) {
-			/* the garbage collector is running, don't create more zvals */
+			// the garbage collector is running, don't create more zvals 
 			return NULL;
 		}
 #endif
@@ -237,9 +245,9 @@ static HashTable *v8js_v8object_get_properties(zval *object) /* {{{ */
 		zend_hash_init(obj->properties, 0, NULL, ZVAL_PTR_DTOR, 0);
 
 		if (!obj->ctx) {
-			/* Half-constructed object, probably due to unserialize call.
-			 * Just pass back properties hash so unserialize can write to
-			 * it (instead of crashing the engine). */
+			// Half-constructed object, probably due to unserialize call.
+			// Just pass back properties hash so unserialize can write to
+			// it (instead of crashing the engine). 
 			return obj->properties;
 		}
 	} else if (!obj->properties->u.v.nIteratorsCount) {
@@ -258,12 +266,12 @@ static HashTable *v8js_v8object_get_properties(zval *object) /* {{{ */
 	if (v8js_get_properties_hash(v8obj, obj->properties, obj->flags, isolate) == SUCCESS) {
 		return obj->properties;
 	}
-
+*/
 	return NULL;
 }
 /* }}} */
 
-static HashTable *v8js_v8object_get_debug_info(zval *object, int *is_temp) /* {{{ */
+static HashTable *v8js_v8object_get_debug_info(_zend_object *object, int *is_temp) /* {{{ */
 {
 	*is_temp = 0;
 	return v8js_v8object_get_properties(object);
@@ -300,7 +308,7 @@ static zend_function *v8js_v8object_get_method(zend_object **object_ptr, zend_st
 				&& jsObj->Get(v8_context, jsKey).ToLocal(&jsObjSlot)
 				&& jsObjSlot->IsFunction()) {
 			f = (zend_function *) ecalloc(1, sizeof(*f));
-			f->type = ZEND_OVERLOADED_FUNCTION_TEMPORARY;
+			f->type = 5;//ZEND_OVERLOADED_FUNCTION_TEMPORARY; xxx
 			f->common.function_name = zend_string_copy(method);
 			return f;
 		}
@@ -426,7 +434,7 @@ static int v8js_v8object_get_closure(zval *object, zend_class_entry **ce_ptr, ze
 	}
 
 	invoke = (zend_function *) ecalloc(1, sizeof(*invoke));
-	invoke->type = ZEND_OVERLOADED_FUNCTION_TEMPORARY;
+	invoke->type = 5;//ZEND_OVERLOADED_FUNCTION_TEMPORARY;xxx
 	invoke->common.function_name = zend_string_init(V8JS_V8_INVOKE_FUNC_NAME, sizeof(V8JS_V8_INVOKE_FUNC_NAME) - 1, 0);
 
 	*fptr_ptr = invoke;
@@ -826,10 +834,10 @@ PHP_MINIT_FUNCTION(v8js_v8object_class) /* {{{ */
 	v8js_v8object_handlers.write_property = v8js_v8object_write_property;
 	v8js_v8object_handlers.unset_property = v8js_v8object_unset_property;
 	v8js_v8object_handlers.get_properties = v8js_v8object_get_properties;
-	v8js_v8object_handlers.get_method = v8js_v8object_get_method;
-	v8js_v8object_handlers.call_method = v8js_v8object_call_method;
+	//v8js_v8object_handlers.get_method = v8js_v8object_get_method;
+	//v8js_v8object_handlers.call_method = v8js_v8object_call_method;
 	v8js_v8object_handlers.get_debug_info = v8js_v8object_get_debug_info;
-	v8js_v8object_handlers.get_closure = v8js_v8object_get_closure;
+	//v8js_v8object_handlers.get_closure = v8js_v8object_get_closure;
 	v8js_v8object_handlers.offset = XtOffsetOf(struct v8js_v8object, std);
 	v8js_v8object_handlers.free_obj = v8js_v8object_free_storage;
 

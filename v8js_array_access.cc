@@ -50,7 +50,7 @@ static zval v8js_array_access_dispatch(zend_object *object, const char *method_n
 	fci.params = params;
 
 	fci.object = object;
-#if (PHP_MAJOR_VERSION == 7 )
+#if (PHP_MAJOR_VERSION <= 7 )
 	fci.no_separation = 0;
 #endif
 	zend_call_function(&fci, NULL);
