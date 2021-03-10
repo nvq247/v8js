@@ -138,7 +138,9 @@ static void v8js_call_php_func(zend_object *object, zend_function *method_ptr, c
 		fci.params = NULL;
 	}
 
-	fci.no_separation = 1;
+	#if (PHP_MAJOR_VERSION <= 7 )
+		fci.no_separation = 1;
+	#endif
 	info.GetReturnValue().Set(V8JS_NULL);
 
 	{
