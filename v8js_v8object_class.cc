@@ -748,20 +748,21 @@ void v8js_v8object_create(zval *res, v8::Local<v8::Value> value, int flags, v8::
 	ctx->v8js_v8objects.push_front(c);
 }
 /* }}} */
-
+ZEND_BEGIN_ARG_INFO(arginfo_void, 0)
+ZEND_END_ARG_INFO()
 
 static const zend_function_entry v8js_v8object_methods[] = { /* {{{ */
-	PHP_ME(V8Object,	__construct,			NULL,				ZEND_ACC_PUBLIC|ZEND_ACC_CTOR)
-	PHP_ME(V8Object,	__sleep,				NULL,				ZEND_ACC_PUBLIC|ZEND_ACC_FINAL)
-	PHP_ME(V8Object,	__wakeup,				NULL,				ZEND_ACC_PUBLIC|ZEND_ACC_FINAL)
+	PHP_ME(V8Object,	__construct,			arginfo_void,				ZEND_ACC_PUBLIC|ZEND_ACC_CTOR)
+	PHP_ME(V8Object,	__sleep,				arginfo_void,				ZEND_ACC_PUBLIC|ZEND_ACC_FINAL)
+	PHP_ME(V8Object,	__wakeup,				arginfo_void,				ZEND_ACC_PUBLIC|ZEND_ACC_FINAL)
 	{NULL, NULL, NULL}
 };
 /* }}} */
 
 static const zend_function_entry v8js_v8function_methods[] = { /* {{{ */
-	PHP_ME(V8Function,	__construct,			NULL,				ZEND_ACC_PUBLIC|ZEND_ACC_CTOR)
-	PHP_ME(V8Function,	__sleep,				NULL,				ZEND_ACC_PUBLIC|ZEND_ACC_FINAL)
-	PHP_ME(V8Function,	__wakeup,				NULL,				ZEND_ACC_PUBLIC|ZEND_ACC_FINAL)
+	PHP_ME(V8Function,	__construct,			arginfo_void,				ZEND_ACC_PUBLIC|ZEND_ACC_CTOR)
+	PHP_ME(V8Function,	__sleep,				arginfo_void,				ZEND_ACC_PUBLIC|ZEND_ACC_FINAL)
+	PHP_ME(V8Function,	__wakeup,				arginfo_void,				ZEND_ACC_PUBLIC|ZEND_ACC_FINAL)
 	{NULL, NULL, NULL}
 };
 /* }}} */
@@ -782,9 +783,9 @@ ZEND_BEGIN_ARG_INFO(arginfo_v8generator_valid, 0)
 ZEND_END_ARG_INFO()
 
 static const zend_function_entry v8js_v8generator_methods[] = { /* {{{ */
-	PHP_ME(V8Generator,	__construct,			NULL,							ZEND_ACC_PUBLIC|ZEND_ACC_CTOR)
-	PHP_ME(V8Generator,	__sleep,				NULL,							ZEND_ACC_PUBLIC|ZEND_ACC_FINAL)
-	PHP_ME(V8Generator,	__wakeup,				NULL,							ZEND_ACC_PUBLIC|ZEND_ACC_FINAL)
+	PHP_ME(V8Generator,	__construct,			arginfo_void,							ZEND_ACC_PUBLIC|ZEND_ACC_CTOR)
+	PHP_ME(V8Generator,	__sleep,				arginfo_void,							ZEND_ACC_PUBLIC|ZEND_ACC_FINAL)
+	PHP_ME(V8Generator,	__wakeup,				arginfo_void,							ZEND_ACC_PUBLIC|ZEND_ACC_FINAL)
 
 	PHP_ME(V8Generator,	current,				arginfo_v8generator_current,	ZEND_ACC_PUBLIC)
 	PHP_ME(V8Generator,	key,					arginfo_v8generator_key,		ZEND_ACC_PUBLIC)
