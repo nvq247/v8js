@@ -149,8 +149,10 @@ static void v8js_call_php_func(zend_object *object, zend_function *method_ptr, c
 
 		zend_try {
 			/* zend_fcall_info_cache */
-#if PHP_VERSION_ID < 70300
-			fcc.initialized = 1;
+#if PHP_VERSION_ID >= 80000
+                fci.named_params = NULL;
+#else
+                fci.no_separation = 1;
 #endif
 			fcc.function_handler = method_ptr;
 			fcc.calling_scope = object->ce;

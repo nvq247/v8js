@@ -413,10 +413,10 @@ static int v8js_v8object_call_method(zend_string *method, zend_object *object, I
 }
 /* }}} */
 
-static int v8js_v8object_get_closure(zval *object, zend_class_entry **ce_ptr, zend_function **fptr_ptr, zend_object **zobj_ptr) /* {{{ */
+static int v8js_v8object_get_closure(_zend_object *object, zend_class_entry **ce_ptr, zend_function **fptr_ptr, zend_object **zobj_ptr, bool book) /* {{{ */
 {
 	zend_function *invoke;
-	v8js_v8object *obj = Z_V8JS_V8OBJECT_OBJ_P(object);
+	v8js_v8object *obj = Z_V8JS_V8OBJECT(object);
 
 	if (!obj->ctx) {
 		zend_throw_exception(php_ce_v8js_exception,
@@ -438,7 +438,7 @@ static int v8js_v8object_get_closure(zval *object, zend_class_entry **ce_ptr, ze
 	*fptr_ptr = invoke;
 
 	if (zobj_ptr) {
-		*zobj_ptr = Z_OBJ_P(object);
+		*zobj_ptr = (object);
 	}
 
 	*ce_ptr = NULL;
@@ -833,10 +833,10 @@ PHP_MINIT_FUNCTION(v8js_v8object_class) /* {{{ */
 	v8js_v8object_handlers.write_property = v8js_v8object_write_property;
 	v8js_v8object_handlers.unset_property = v8js_v8object_unset_property;
 	v8js_v8object_handlers.get_properties = v8js_v8object_get_properties;
-	//v8js_v8object_handlers.get_method = v8js_v8object_get_method;
+	v8js_v8object_handlers.get_method = v8js_v8object_get_method;
 	//v8js_v8object_handlers.call_method = v8js_v8object_call_method;
 	v8js_v8object_handlers.get_debug_info = v8js_v8object_get_debug_info;
-	//v8js_v8object_handlers.get_closure = v8js_v8object_get_closure;
+	v8js_v8object_handlers.get_closure = v8js_v8object_get_closure;
 	v8js_v8object_handlers.offset = XtOffsetOf(struct v8js_v8object, std);
 	v8js_v8object_handlers.free_obj = v8js_v8object_free_storage;
 
