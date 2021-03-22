@@ -152,9 +152,7 @@ int main ()
     AC_DEFINE_UNQUOTED([PHP_V8_API_VERSION], $V8_API_VERSION, [ ])
     AC_DEFINE_UNQUOTED([PHP_V8_VERSION], "$ac_cv_v8_version", [ ])
   else
-    AC_DEFINE_UNQUOTED([PHP_V8_API_VERSION], "8007000", [ ])
-    AC_DEFINE_UNQUOTED([PHP_V8_VERSION], "8007000", [ ])
-    //AC_MSG_ERROR([could not determine libv8 version])
+    AC_MSG_ERROR([could not determine libv8 version])
   fi
 
 
